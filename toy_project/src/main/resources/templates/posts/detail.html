@@ -1,0 +1,22 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><title>상세</title></head>
+<body>
+<h1 th:text="${post.title}"></h1>
+<p>작성자: <span th:text="${post.author}"></span></p>
+<p>작성: <span th:text="${post.createdAt}"></span></p>
+<p>수정: <span th:text="${post.updatedAt}"></span></p>
+<hr>
+<pre th:text="${post.content}"></pre>
+<hr>
+
+<a th:href="@{|/posts/${post.id}/edit|}">수정</a>
+
+<form th:action="@{|/posts/${post.id}/delete|}" method="post" style="display:inline;">
+    <button type="submit">삭제</button>
+</form>
+
+<br><br>
+<a th:href="@{/posts}">목록</a>
+</body>
+</html>
