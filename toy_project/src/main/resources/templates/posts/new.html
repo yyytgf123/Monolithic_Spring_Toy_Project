@@ -1,17 +1,36 @@
 <!doctype html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head><meta charset="UTF-8"><title>글쓰기</title></head>
+<head>
+    <meta charset="UTF-8">
+    <title>게시판 - 글쓰기</title>
+    <link rel="stylesheet" th:href="@{/css/posts.css}">
+</head>
 <body>
-<h1>글쓰기</h1>
+<div th:replace="fragments/header :: header"></div>
 
-<form th:action="@{/posts}" method="post" th:object="${postCreateRequest}">
-    제목: <input type="text" th:field="*{title}"><br><br>
-    작성자: <input type="text" th:field="*{author}"><br><br>
-    내용:<br>
-    <textarea th:field="*{content}" rows="10" cols="60"></textarea><br><br>
-    <button type="submit">등록</button>
-</form>
+<div class="container">
+    <div class="card">
+        <div class="header">
+            <div>
+                <h1>글쓰기</h1>
+                <div class="muted">폼 입력값이 @ModelAttribute로 DTO에 바인딩돼요</div>
+            </div>
+            <div class="actions">
+                <a class="btn" th:href="@{/posts}">목록</a>
+            </div>
+        </div>
 
-<a th:href="@{/posts}">목록</a>
+        <form class="form" th:action="@{/posts}" method="post" th:object="${posts}">
+            <input class="input" type="text" placeholder="제목" th:field="*{title}">
+            <input class="input" type="text" placeholder="작성자" th:field="*{author}">
+            <textarea class="textarea" placeholder="내용" th:field="*{content}"></textarea>
+
+            <div class="actions">
+                <button class="btn primary" type="submit">등록</button>
+                <a class="btn" th:href="@{/posts}">취소</a>
+            </div>
+        </form>
+    </div>
+</div>
 </body>
 </html>

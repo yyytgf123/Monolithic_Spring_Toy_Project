@@ -2,548 +2,181 @@
 <html lang="ko">
 <head>
     <meta charset="utf-8" />
-    <title>Board API 테스트 콘솔</title>
+    <title>Post API Test Console</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <style>
-        :root { --gap: 12px; --pad: 14px; }
-        body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 0; background:#f6f7f9; color:#111; }
-        header { padding: 18px var(--pad); background: white; border-bottom: 1px solid #e5e7eb; position: sticky; top: 0; z-index: 1;}
-        h1 { margin: 0; font-size: 18px; }
-        main { padding: var(--pad); display: grid; gap: var(--gap); grid-template-columns: 1.3fr 1fr; }
-        section { background: white; border: 1px solid #e5e7eb; border-radius: 12px; padding: var(--pad); }
-        section h2 { margin-top: 0; font-size: 16px; }
-        .row { display: flex; gap: var(--gap); align-items: center; flex-wrap: wrap; }
-        .row > * { flex: 1 1 auto; min-width: 160px; }
-        label { font-size: 12px; color:#374151; display:block; margin-bottom:6px; }
-        input, textarea, select, button { width:100%; padding:10px; border:1px solid #d1d5db; border-radius:10px; font:inherit; background:#fff; }
-        textarea { min-height: 90px; resize: vertical; }
-        button { cursor: pointer; border:0; background:#111827; color:white; }
-        button.secondary { background:#e5e7eb; color:#111; }
-        .muted { color:#6b7280; font-size:12px; }
-        .table { width:100%; border-collapse: collapse; }
-        .table th, .table td { border-bottom:1px solid #f0f0f0; padding:10px; text-align:left; vertical-align: top; }
-        .pill { display:inline-block; padding:2px 8px; border:1px solid #e5e7eb; border-radius:999px; font-size:12px; color:#4b5563; background:#f9fafb; }
-        .actions { display:flex; gap:8px; }
-        .grid-2 { display:grid; grid-template-columns: 1fr 1fr; gap: var(--gap); }
-        .kbd { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size:12px; background:#f3f4f6; padding:2px 6px; border-radius:6px; }
-        .error { color:#b91c1c; font-size:13px; white-space:pre-wrap; }
-        .success { color:#065f46; font-size:13px; white-space:pre-wrap; }
-        .jsonbox { background:#0b1020; color:#e5e7eb; border-radius:10px; padding:10px; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size:12px; overflow:auto; max-height: 260px; }
-        @media (max-width: 1100px) { main { grid-template-columns: 1fr; } }
+        body {
+            font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+            background: #f6f7f9;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 { margin-top: 0; }
+        section {
+            background: #fff;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+            border: 1px solid #e5e7eb;
+        }
+        label {
+            display: block;
+            font-size: 12px;
+            margin-bottom: 6px;
+            color: #374151;
+        }
+        input, textarea, button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            border: 1px solid #d1d5db;
+        }
+        textarea { resize: vertical; }
+        button {
+            background: #111827;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+        .row { display: flex; gap: 10px; }
+        .success { color: #065f46; font-size: 13px; }
+        .error { color: #b91c1c; font-size: 13px; white-space: pre-wrap; }
+        .jsonbox {
+            background: #0b1020;
+            color: #e5e7eb;
+            padding: 10px;
+            border-radius: 8px;
+            font-family: ui-monospace, monospace;
+            font-size: 12px;
+            white-space: pre-wrap;
+        }
     </style>
 </head>
 <body>
-<header>
-    <h1>게시판 API 테스트 콘솔</h1>
-    <div class="muted">엔드포인트: <span class="kbd" id="baseUrlLabel"></span></div>
-</header>
 
-<main>
-    <!-- 왼쪽: 목록/검색 + 상세 -->
-    <section>
-        <h2>목록 / 검색</h2>
-        <div class="row">
-            <div>
-                <label for="q">검색어(q, 제목/내용)</label>
-                <input id="q" placeholder="예) 스프링" />
-            </div>
-            <div>
-                <label for="size">페이지 크기(size)</label>
-                <select id="size">
-                    <option value="5">5</option>
-                    <option value="10" selected>10</option>
-                    <option value="20">20</option>
-                </select>
-            </div>
-            <div>
-                <label for="sort">정렬(sort)</label>
-                <select id="sort">
-                    <option value="id,desc">id,desc</option>
-                    <option value="id,asc">id,asc</option>
-                </select>
-            </div>
-            <div style="flex:0 0 auto; min-width:auto;">
-                <label>&nbsp;</label>
-                <button id="btnSearch">검색</button>
-            </div>
-        </div>
+<h1>Post API 테스트 콘솔</h1>
 
-        <div class="row" style="margin-top:10px; align-items: center;">
-            <div class="muted">현재 페이지: <span id="pageNow">0</span> / 총 <span id="pageTotal">0</span></div>
-            <div class="actions" style="margin-left:auto">
-                <button class="secondary" id="btnPrev">이전</button>
-                <button class="secondary" id="btnNext">다음</button>
-            </div>
-        </div>
+<section>
+    <h3>공통 설정</h3>
+    <label>Base URL</label>
+    <input id="baseUrl" value="/api/posts" />
+</section>
 
-        <div style="overflow:auto; margin-top:10px;">
-            <table class="table" id="listTable">
-                <thead>
-                <tr>
-                    <th style="width:80px">ID</th>
-                    <th>제목</th>
-                    <th style="width:120px">작성자</th>
-                    <th style="width:180px">생성일</th>
-                    <th style="width:220px">액션</th>
-                </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
-        </div>
+<section>
+    <h3>게시글 생성 (POST)</h3>
+    <label>작성자 ID</label>
+    <input id="authorId" type="number" />
 
-        <div id="listMsg" class="muted" style="margin-top:8px;"></div>
-        <div id="listErr" class="error"></div>
-    </section>
+    <label>제목</label>
+    <input id="title" />
 
-    <section>
-        <h2>상세 조회</h2>
-        <div class="row">
-            <div>
-                <label for="detailId">게시글 ID</label>
-                <input id="detailId" type="number" placeholder="예) 1" />
-            </div>
-            <div style="flex:0 0 auto; min-width:auto;">
-                <label>&nbsp;</label>
-                <button id="btnDetail">불러오기</button>
-            </div>
-        </div>
-        <div id="detailOut" class="jsonbox" style="margin-top:10px;">{}</div>
-        <div id="detailErr" class="error"></div>
-    </section>
+    <label>내용</label>
+    <textarea id="content"></textarea>
 
-    <!-- 오른쪽: 생성/수정/삭제 -->
-    <section>
-        <h2>게시글 생성 (POST /api/boards)</h2>
-        <div class="row">
-            <div>
-                <label for="createAuthor">작성자 ID (authorId)</label>
-                <input id="createAuthor" type="number" />
-            </div>
-            <div>
-                <label for="createTitle">제목 (title)</label>
-                <input id="createTitle" />
-            </div>
-        </div>
-        <div class="row" style="margin-top:10px;">
-            <div>
-                <label for="createContent">내용 (content)</label>
-                <textarea id="createContent"></textarea>
-            </div>
-        </div>
-        <div class="actions" style="margin-top:10px;">
-            <button id="btnCreate">생성</button>
-            <button class="secondary" id="btnCreateReset" type="button">초기화</button>
-        </div>
-        <div id="createMsg" class="success" style="margin-top:8px;"></div>
-        <div id="createErr" class="error"></div>
-    </section>
+    <button id="btnCreate">생성</button>
+    <div id="createMsg" class="success"></div>
+    <div id="createErr" class="error"></div>
+</section>
 
-    <section>
-        <h2>게시글 수정 (PUT /api/boards/{id})</h2>
-        <div class="grid-2">
-            <div>
-                <label for="updateId">게시글 ID (path)</label>
-                <input id="updateId" type="number" />
-            </div>
-            <div>
-                <label for="updateEditor">수정자 ID (editorId)</label>
-                <input id="updateEditor" type="number" />
-            </div>
-            <div>
-                <label for="updateTitle">제목 (title)</label>
-                <input id="updateTitle" />
-            </div>
-            <div>
-                <label for="updateContent">내용 (content)</label>
-                <textarea id="updateContent"></textarea>
-            </div>
-        </div>
-        <div class="actions" style="margin-top:10px;">
-            <button id="btnUpdate">수정</button>
-            <button class="secondary" id="btnLoadForUpdate" type="button">현재 내용 불러와 채우기</button>
-        </div>
-        <div id="updateMsg" class="success" style="margin-top:8px;"></div>
-        <div id="updateErr" class="error"></div>
-    </section>
+<section>
+    <h3>게시글 상세 조회 (GET)</h3>
+    <div class="row">
+        <input id="detailId" type="number" placeholder="게시글 ID" />
+        <button id="btnDetail">조회</button>
+    </div>
+    <div id="detailOut" class="jsonbox">{}</div>
+    <div id="detailErr" class="error"></div>
+</section>
 
-    <section>
-        <h2>게시글 삭제 (DELETE /api/boards/{id}?requesterId=)</h2>
-        <div class="grid-2">
-            <div>
-                <label for="deleteId">게시글 ID (path)</label>
-                <input id="deleteId" type="number" />
-            </div>
-            <div>
-                <label for="deleteRequester">요청자 ID (requesterId)</label>
-                <input id="deleteRequester" type="number" />
-            </div>
-        </div>
-        <div class="actions" style="margin-top:10px;">
-            <button id="btnDelete">삭제</button>
-        </div>
-        <div id="deleteMsg" class="success" style="margin-top:8px;"></div>
-        <div id="deleteErr" class="error"></div>
-    </section>
-</main>
+<section>
+    <h3>게시글 수정 (PUT)</h3>
+    <label>게시글 ID</label>
+    <input id="updateId" type="number" />
 
+    <label>제목</label>
+    <input id="updateTitle" />
+
+    <label>내용</label>
+    <textarea id="updateContent"></textarea>
+
+    <button id="btnUpdate">수정</button>
+    <div id="updateMsg" class="success"></div>
+    <div id="updateErr" class="error"></div>
+</section>
+
+<section>
+    <h3>게시글 삭제 (DELETE)</h3>
+    <div class="row">
+        <input id="deleteId" type="number" placeholder="게시글 ID" />
+        <button id="btnDelete">삭제</button>
+    </div>
+    <div id="deleteMsg" class="success"></div>
+    <div id="deleteErr" class="error"></div>
+</section>
 <script>
-    // ================== 설정 ==================
-    const BASE_URL = "/api/boards"; // 컨트롤러 @RequestMapping("/api/boards") 기준
-    document.getElementById("baseUrlLabel").textContent = BASE_URL;
+    const base = () => document.getElementById("baseUrl").value.trim();
 
-    // 페이지 상태
-    let state = { page: 0, totalPages: 0, size: 10, q: "", sort: "id,desc" };
-
-    // 공통: 에러 읽기
-    async function readError(res) {
-        const ct = res.headers.get("content-type") || "";
+    async function request(url, options, successEl, errorEl, outEl) {
+        successEl && (successEl.textContent = "");
+        errorEl && (errorEl.textContent = "");
         try {
-            if (ct.includes("application/json")) {
-                const j = await res.json();
-                return JSON.stringify(j, null, 2);
-            } else {
-                return await res.text();
-            }
-        } catch {
-            return `HTTP ${res.status} ${res.statusText}`;
-        }
-    }
-
-    // ============ 목록/검색 ============
-
-    async function fetchList(opts = {}) {
-        const page = opts.page ?? state.page;
-        const size = opts.size ?? state.size;
-        const q = opts.q ?? state.q;
-        const sort = opts.sort ?? state.sort;
-
-        const params = new URLSearchParams({ page, size, sort });
-        if (q) params.set("q", q);
-
-        const url = `${BASE_URL}?${params}`;
-        const listErr = document.getElementById("listErr");
-        const listMsg = document.getElementById("listMsg");
-        listErr.textContent = "";
-        listMsg.textContent = "";
-
-        try {
-            /* ★ 컨트롤러 매핑
-               @GetMapping
-               public Page<BoardResponse> list(@RequestParam(required = false) String q, Pageable pageable)
-               → HTTP GET /api/boards?page=&size=&sort=&q=
-            */
             const res = await fetch(url, {
-                method: "GET",                 // ← GET 메서드로 호출
-                credentials: "include",
-                headers: { "Accept": "application/json" }
+                headers: { "Content-Type": "application/json" },
+                ...options
             });
 
             if (!res.ok) {
-                listErr.textContent = await readError(res);
+                errorEl.textContent = await res.text();
                 return;
             }
-            const pageData = await res.json(); // Page<BoardResponse> 형태
-            renderList(pageData);
 
-            state.page = pageData.number ?? page;
-            state.totalPages = pageData.totalPages ?? 0;
-            state.size = pageData.size ?? size;
-            state.q = q;
-            state.sort = sort;
-
-            document.getElementById("pageNow").textContent = state.page;
-            document.getElementById("pageTotal").textContent = state.totalPages;
-            listMsg.textContent = `총 ${pageData.totalElements ?? 0}건`;
-        } catch (e) {
-            listErr.textContent = e.message || String(e);
-        }
-    }
-
-    function renderList(pageData) {
-        const tbody = document.querySelector("#listTable tbody");
-        tbody.innerHTML = "";
-        const items = pageData.content || [];
-        if (items.length === 0) {
-            const tr = document.createElement("tr");
-            const td = document.createElement("td");
-            td.colSpan = 5;
-            td.innerHTML = `<span class="muted">검색 결과가 없습니다.</span>`;
-            tr.appendChild(td);
-            tbody.appendChild(tr);
-            return;
-        }
-        for (const it of items) {
-            const tr = document.createElement("tr");
-            const createdAt = it.createdAt ?? it.createdDate ?? it.created_time ?? "";
-            const author = it.authorId ?? it.author ?? "";
-
-            tr.innerHTML = `
-        <td>${it.id ?? ""}</td>
-        <td>${escapeHtml(it.title ?? "")}</td>
-        <td>${author}</td>
-        <td><span class="pill">${escapeHtml(createdAt)}</span></td>
-        <td>
-          <div class="actions">
-            <button class="secondary" data-view="${it.id}">상세</button>
-            <button class="secondary" data-fill="${it.id}">수정채우기</button>
-          </div>
-        </td>
-      `;
-            tbody.appendChild(tr);
-        }
-
-        // 목록 행의 "상세" 버튼 → 상세 API 호출 트리거
-        tbody.querySelectorAll("button[data-view]").forEach(btn => {
-            btn.addEventListener("click", () => {
-                document.getElementById("detailId").value = btn.dataset.view;
-                document.getElementById("btnDetail").click();
-                window.scrollTo({ top: 0, behavior: "smooth" });
-            });
-        });
-        // 목록 행의 "수정채우기" 버튼 → 상세 읽어서 수정폼 채우기
-        tbody.querySelectorAll("button[data-fill]").forEach(btn => {
-            btn.addEventListener("click", async () => {
-                await loadForUpdate(btn.dataset.fill);
-                window.scrollTo({ top: document.getElementById("btnUpdate").getBoundingClientRect().top + window.scrollY - 90, behavior: "smooth" });
-            });
-        });
-    }
-
-    // ============ 상세 ============
-
-    async function fetchDetail(id) {
-        const out = document.getElementById("detailOut");
-        const err = document.getElementById("detailErr");
-        err.textContent = "";
-        out.textContent = "{}";
-        if (!id) {
-            err.textContent = "ID를 입력하세요.";
-            return;
-        }
-        try {
-            /* ★ 컨트롤러 매핑
-               @GetMapping("/{id}")
-               public ResponseEntity<BoardResponse> detail(@PathVariable Long id)
-               → HTTP GET /api/boards/{id}
-            */
-            const res = await fetch(`${BASE_URL}/${id}`, {
-                method: "GET",                 // ← GET 메서드로 호출
-                credentials: "include",
-                headers: { "Accept": "application/json" }
-            });
-
-            if (!res.ok) {
-                err.textContent = await readError(res);
+            if (res.status === 204) {
+                successEl.textContent = "요청 성공";
                 return;
             }
-            const data = await res.json();   // BoardResponse
-            out.textContent = JSON.stringify(data, null, 2);
-        } catch (e) {
-            err.textContent = e.message || String(e);
-        }
-    }
 
-    // ============ 생성 ============
-
-    async function createBoard() {
-        const authorId = +document.getElementById("createAuthor").value;
-        const title = document.getElementById("createTitle").value?.trim();
-        const content = document.getElementById("createContent").value?.trim();
-        const msg = document.getElementById("createMsg");
-        const err = document.getElementById("createErr");
-        msg.textContent = "";
-        err.textContent = "";
-
-        if (!authorId || !title || !content) {
-            err.textContent = "authorId, title, content를 모두 입력하세요.";
-            return;
-        }
-
-        try {
-            /* ★ 컨트롤러 매핑
-               @PostMapping
-               public ResponseEntity<Long> create(@Valid @RequestBody CreateBoardRequest req)
-               → HTTP POST /api/boards (본문 JSON)
-            */
-            const res = await fetch(BASE_URL, {
-                method: "POST",                // ← POST 메서드로 호출
-                credentials: "include",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Accept": "application/json"
-                },
-                body: JSON.stringify({ authorId, title, content }) // ← CreateBoardRequest
-            });
-
-            if (!res.ok) {
-                err.textContent = await readError(res);
-                return;
-            }
-            const id = await res.json();     // 생성된 게시글 ID(Long)
-            msg.textContent = `생성 완료! 새 ID: ${id}`;
-            await fetchList({ page: 0 });    // 목록 새로고침
-        } catch (e) {
-            err.textContent = e.message || String(e);
-        }
-    }
-
-    // ============ 수정 ============
-
-    async function loadForUpdate(id) {
-        const updateId = document.getElementById("updateId");
-        const updateTitle = document.getElementById("updateTitle");
-        const updateContent = document.getElementById("updateContent");
-        const err = document.getElementById("updateErr");
-        const msg = document.getElementById("updateMsg");
-        err.textContent = ""; msg.textContent = "";
-
-        if (!id) { err.textContent = "ID를 입력하세요."; return; }
-        try {
-            // 상세 조회를 재활용해서 수정 폼 채우기 (GET /api/boards/{id})
-            const res = await fetch(`${BASE_URL}/${id}`, {
-                method: "GET",
-                credentials: "include",
-                headers: { "Accept": "application/json" }
-            });
-            if (!res.ok) {
-                err.textContent = await readError(res);
-                return;
-            }
             const data = await res.json();
-            updateId.value = data.id ?? id;
-            updateTitle.value = data.title ?? "";
-            updateContent.value = data.content ?? "";
-            msg.textContent = "현재 내용으로 채웠습니다.";
+            outEl && (outEl.textContent = JSON.stringify(data, null, 2));
+            successEl && (successEl.textContent = "요청 성공");
+            return data;
         } catch (e) {
-            err.textContent = e.message || String(e);
+            errorEl.textContent = e.message;
         }
     }
 
-    async function updateBoard() {
-        const id = +document.getElementById("updateId").value;
-        const editorId = +document.getElementById("updateEditor").value;
-        const title = document.getElementById("updateTitle").value?.trim();
-        const content = document.getElementById("updateContent").value?.trim();
-        const msg = document.getElementById("updateMsg");
-        const err = document.getElementById("updateErr");
-        msg.textContent = ""; err.textContent = "";
+    btnCreate.onclick = () => {
+        request(base(), {
+            method: "POST",
+            body: JSON.stringify({
+                authorId: +authorId.value,
+                title: title.value,
+                content: content.value
+            })
+        }, createMsg, createErr);
+    };
 
-        if (!id || !editorId || !title || !content) {
-            err.textContent = "id, editorId, title, content를 모두 입력하세요.";
-            return;
-        }
-        try {
-            /* ★ 컨트롤러 매핑
-               @PutMapping("/{id}")
-               public ResponseEntity<?> update(@PathVariable Long id, @Valid @RequestBody UpdateBoardRequest req)
-               → HTTP PUT /api/boards/{id} (본문 JSON)
-               (컨트롤러는 204 No Content 반환)
-            */
-            const res = await fetch(`${BASE_URL}/${id}`, {
-                method: "PUT",                 // ← PUT 메서드로 호출
-                credentials: "include",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Accept": "application/json"
-                },
-                body: JSON.stringify({ editorId, title, content }) // ← UpdateBoardRequest
-            });
+    btnDetail.onclick = () => {
+        request(`${base()}/${detailId.value}`, { method: "GET" },
+            null, detailErr, detailOut);
+    };
 
-            if (!res.ok && res.status !== 204) { // 204가 정상 흐름
-                err.textContent = await readError(res);
-                return;
-            }
-            msg.textContent = "수정 완료!";
-            await fetchList({ page: state.page });
-        } catch (e) {
-            err.textContent = e.message || String(e);
-        }
-    }
+    btnUpdate.onclick = () => {
+        request(`${base()}/${updateId.value}`, {
+            method: "PUT",
+            body: JSON.stringify({
+                title: updateTitle.value,
+                content: updateContent.value
+            })
+        }, updateMsg, updateErr);
+    };
 
-    // ============ 삭제 ============
-
-    async function deleteBoard() {
-        const id = +document.getElementById("deleteId").value;
-        const requesterId = +document.getElementById("deleteRequester").value;
-        const msg = document.getElementById("deleteMsg");
-        const err = document.getElementById("deleteErr");
-        msg.textContent = ""; err.textContent = "";
-
-        if (!id || !requesterId) {
-            err.textContent = "id, requesterId를 입력하세요.";
-            return;
-        }
-        try {
-            /* ★ 컨트롤러 매핑
-               @DeleteMapping("/{id}")
-               public ResponseEntity<Void> delete(@PathVariable Long id, @RequestParam Long requesterId)
-               → HTTP DELETE /api/boards/{id}?requesterId=123
-               (컨트롤러는 204 No Content 반환)
-            */
-            const url = `${BASE_URL}/${id}?requesterId=${encodeURIComponent(requesterId)}`;
-            const res = await fetch(url, {
-                method: "DELETE",              // ← DELETE 메서드로 호출
-                credentials: "include",
-                headers: { "Accept": "*/*" }
-            });
-
-            if (!res.ok && res.status !== 204) { // 204가 정상 흐름
-                err.textContent = await readError(res);
-                return;
-            }
-            msg.textContent = "삭제 완료!";
-            await fetchList({ page: 0 });
-        } catch (e) {
-            err.textContent = e.message || String(e);
-        }
-    }
-
-    // ============ 유틸 & 이벤트 바인딩 ============
-
-    function escapeHtml(str) {
-        return String(str).replace(/[&<>"']/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s]));
-    }
-
-    document.getElementById("btnSearch").addEventListener("click", () => {
-        const q = document.getElementById("q").value.trim();
-        const size = +document.getElementById("size").value;
-        const sort = document.getElementById("sort").value;
-        fetchList({ page: 0, size, q, sort });
-    });
-    document.getElementById("btnPrev").addEventListener("click", () => {
-        if (state.page > 0) fetchList({ page: state.page - 1 });
-    });
-    document.getElementById("btnNext").addEventListener("click", () => {
-        if (state.page < state.totalPages - 1) fetchList({ page: state.page + 1 });
-    });
-
-    document.getElementById("btnDetail").addEventListener("click", () => {
-        const id = +document.getElementById("detailId").value;
-        fetchDetail(id);
-    });
-
-    document.getElementById("btnCreate").addEventListener("click", createBoard);
-    document.getElementById("btnCreateReset").addEventListener("click", () => {
-        document.getElementById("createAuthor").value = "";
-        document.getElementById("createTitle").value = "";
-        document.getElementById("createContent").value = "";
-        document.getElementById("createMsg").textContent = "";
-        document.getElementById("createErr").textContent = "";
-    });
-
-    document.getElementById("btnLoadForUpdate").addEventListener("click", () => {
-        const id = +document.getElementById("updateId").value;
-        loadForUpdate(id);
-    });
-    document.getElementById("btnUpdate").addEventListener("click", updateBoard);
-
-    document.getElementById("btnDelete").addEventListener("click", deleteBoard);
-
-    // 초기 로드: 첫 페이지 목록 호출
-    (async function init() {
-        document.getElementById("q").value = "";
-        await fetchList({ page: 0 });
-    })();
+    btnDelete.onclick = () => {
+        request(`${base()}/${deleteId.value}`, {
+            method: "DELETE"
+        }, deleteMsg, deleteErr);
+    };
 </script>
+
 </body>
 </html>

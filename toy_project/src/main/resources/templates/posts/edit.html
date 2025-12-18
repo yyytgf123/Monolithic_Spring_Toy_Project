@@ -1,16 +1,35 @@
 <!doctype html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head><meta charset="UTF-8"><title>수정</title></head>
+<head>
+    <meta charset="UTF-8">
+    <title>게시판 - 수정</title>
+    <link rel="stylesheet" th:href="@{/css/posts.css}">
+</head>
 <body>
-<h1>게시글 수정</h1>
+<div th:replace="fragments/header :: header"></div>
 
-<form th:action="@{|/posts/${post.id}/edit|}" method="post" th:object="${postUpdateRequest}">
-    제목: <input type="text" th:field="*{title}"><br><br>
-    내용:<br>
-    <textarea th:field="*{content}" rows="10" cols="60"></textarea><br><br>
-    <button type="submit">수정</button>
-</form>
+<div class="container">
+    <div class="card">
+        <div class="header">
+            <div>
+                <h1>게시글 수정</h1>
+                <div class="muted">수정은 Service @Transactional + Dirty Checking으로 UPDATE 됩니다</div>
+            </div>
+            <div class="actions">
+                <a class="btn" th:href="@{|/posts/${post.id}|}">상세로</a>
+            </div>
+        </div>
 
-<a th:href="@{|/posts/${post.id}|}">취소</a>
+        <form class="form" th:action="@{|/posts/${post.id}/edit|}" method="post" th:object="${postUpdateRequest}">
+            <input class="input" type="text" placeholder="제목" th:field="*{title}">
+            <textarea class="textarea" placeholder="내용" th:field="*{content}"></textarea>
+
+            <div class="actions">
+                <button class="btn primary" type="submit">수정</button>
+                <a class="btn" th:href="@{|/posts/${post.id}|}">취소</a>
+            </div>
+        </form>
+    </div>
+</div>
 </body>
 </html>

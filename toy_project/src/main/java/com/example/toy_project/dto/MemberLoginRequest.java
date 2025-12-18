@@ -5,8 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class PostUpdateRequest {
-
-    private String title;
-    private String content;
+public class MemberLoginRequest {
+    private String email;
+    private String password;
 }

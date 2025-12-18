@@ -1,22 +1,36 @@
 <!doctype html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head><meta charset="UTF-8"><title>상세</title></head>
+<head>
+    <meta charset="UTF-8">
+    <title>게시판 - 상세</title>
+    <link rel="stylesheet" th:href="@{/css/posts.css}">
+</head>
 <body>
-<h1 th:text="${post.title}"></h1>
-<p>작성자: <span th:text="${post.author}"></span></p>
-<p>작성: <span th:text="${post.createdAt}"></span></p>
-<p>수정: <span th:text="${post.updatedAt}"></span></p>
-<hr>
-<pre th:text="${post.content}"></pre>
-<hr>
+<div th:replace="fragments/header :: header"></div>
 
-<a th:href="@{|/posts/${post.id}/edit|}">수정</a>
+<div class="container">
+    <div class="card">
+        <div class="header">
+            <div>
+                <h1 th:text="${post.title}">제목</h1>
+                <div class="muted">
+                    작성자: <span th:text="${post.author}"></span>
+                    · 작성: <span th:text="${post.created}"></span>
+                    · 수정: <span th:text="${post.updated}"></span>
+                </div>
+            </div>
 
-<form th:action="@{|/posts/${post.id}/delete|}" method="post" style="display:inline;">
-    <button type="submit">삭제</button>
-</form>
+            <div class="actions">
+                <a class="btn" th:href="@{|/posts/${post.id}/edit|}">수정</a>
+                <form th:action="@{|/posts/${post.id}/delete|}" method="post" style="display:inline;">
+                    <button class="btn danger" type="submit">삭제</button>
+                </form>
+                <a class="btn" th:href="@{/posts}">목록</a>
+            </div>
+        </div>
 
-<br><br>
-<a th:href="@{/posts}">목록</a>
+        <div class="pre" th:text="${post.content}">내용</div>
+    </div>
+</div>
 </body>
 </html>
